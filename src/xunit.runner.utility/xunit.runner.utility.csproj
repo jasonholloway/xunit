@@ -10,7 +10,7 @@
     <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0' ">$(DefineConstants);WINDOWS_UAP</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Xunit</RootNamespace>
-    <TargetFrameworks>net35;net452;netstandard1.1;netstandard1.5;netcoreapp1.0;uap10.0</TargetFrameworks>
+    <TargetFrameworks>net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,10 +38,6 @@
     <Compile Include="..\messages\**\*.cs" LinkBase="Messages" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net452' ">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web" />
@@ -62,6 +58,10 @@
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
     <EmbeddedResource Include="Resources\xunit.runner.utility.uwp10.rd.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
   </ItemGroup>
 
 </Project>

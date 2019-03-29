@@ -6,7 +6,7 @@
     <AssemblyName Condition=" '$(TargetFramework)' == 'netstandard1.5' ">xunit.runner.reporters.netstandard15</AssemblyName>
     <AssemblyName Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">xunit.runner.reporters.netcoreapp10</AssemblyName>
     <RootNamespace>Xunit.Runner.Reporters</RootNamespace>
-    <TargetFrameworks>net452;netstandard1.1;netstandard1.5;netcoreapp1.0</TargetFrameworks>
+    <TargetFrameworks>net452</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
