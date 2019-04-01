@@ -3,9 +3,6 @@
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName Condition=" '$(TargetFramework)' == 'net452' ">xunit.runner.visualstudio.testadapter</AssemblyName>
-    <AssemblyName Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">xunit.runner.visualstudio.dotnetcore.testadapter</AssemblyName>
-    <AssemblyName Condition=" '$(TargetFramework)' == 'uap10.0' ">xunit.runner.visualstudio.uwp.testadapter</AssemblyName>
-    <DefineConstants Condition=" '$(TargetFramework)' == 'uap10.0' ">$(DefineConstants);WINDOWS_UAP</DefineConstants>
     <RootNamespace>Xunit.Runner.VisualStudio</RootNamespace>
     <TargetFrameworks>net452</TargetFrameworks>
   </PropertyGroup>
@@ -19,18 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\AppDomainShim\AppDomainShim.csproj" />
     <ProjectReference Include="..\xunit.runner.reporters\xunit.runner.reporters.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
-    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="15.0.0" PrivateAssets="All" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
+  <ItemGroup>
     <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="11.0.0" PrivateAssets="All" />
   </ItemGroup>
 

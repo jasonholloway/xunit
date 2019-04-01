@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Xunit.Abstractions;
@@ -46,6 +47,7 @@ namespace Xunit
 
         Assembly LoadAssembly(AssemblyName assemblyName)
         {
+            Trace.WriteLine($"Resolving via xunit: {assemblyName.Name}");
             if (lookupCache.TryGetValue(assemblyName.Name, out var result))
                 return result;
 

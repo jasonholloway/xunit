@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Xunit.Abstractions;
+using System.Diagnostics;
 
 #if NETFRAMEWORK
 using System.Linq;
@@ -52,6 +53,7 @@ namespace Xunit
                                     ISourceInformationProvider sourceInformationProvider = null,
                                     IMessageSink diagnosticMessageSink = null)
         {
+            Trace.WriteLine($"Creating XunitFrontController");
             this.appDomainSupport = appDomainSupport;
             this.assemblyFileName = assemblyFileName;
             this.configFileName = configFileName;
@@ -64,13 +66,14 @@ namespace Xunit
 
             if (this.sourceInformationProvider == null)
             {
-#if NETSTANDARD
+//#if NETSTANDARD
                 this.sourceInformationProvider = new NullSourceInformationProvider();
-#else
-                this.sourceInformationProvider = new VisualStudioSourceInformationProvider(assemblyFileName);
-#endif
+//#else
+//                this.sourceInformationProvider = new VisualStudioSourceInformationProvider(assemblyFileName);
+//#endif
                 toDispose.Push(this.sourceInformationProvider);
             }
+            Trace.WriteLine($"Created XunitFrontController");
 
         }
 

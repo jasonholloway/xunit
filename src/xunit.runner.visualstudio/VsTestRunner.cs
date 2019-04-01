@@ -41,6 +41,7 @@ namespace Xunit.Runner.VisualStudio
 
         static readonly HashSet<string> platformAssemblies = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
+            "appdomainshim.dll",
             "microsoft.visualstudio.testplatform.unittestframework.dll",
             "microsoft.visualstudio.testplatform.core.dll",
             "microsoft.visualstudio.testplatform.testexecutor.core.dll",
@@ -230,6 +231,7 @@ namespace Xunit.Runner.VisualStudio
                 {
                     foreach (var assemblyFileNameCanBeWithoutAbsolutePath in sources)
                     {
+                        Trace.WriteLine($"Loadin {assemblyFileNameCanBeWithoutAbsolutePath}");
                         var assemblyFileName = GetAssemblyFileName(assemblyFileNameCanBeWithoutAbsolutePath);
                         var configuration = LoadConfiguration(assemblyFileName);
                         var fileName = Path.GetFileNameWithoutExtension(assemblyFileName);
@@ -259,6 +261,7 @@ namespace Xunit.Runner.VisualStudio
                                                      TestAssemblyConfiguration configuration)
             where TVisitor : IVsDiscoverySink, IDisposable
         {
+
             if (cancelled)
                 return false;
 
@@ -270,6 +273,8 @@ namespace Xunit.Runner.VisualStudio
                 var assembly = new XunitProjectAssembly { AssemblyFilename = assemblyFileName };
                 fileName = Path.GetFileNameWithoutExtension(assemblyFileName);
 
+                Trace.WriteLine($"Disocverin {fileName}");
+
                 if (!IsXunitTestAssembly(assemblyFileName))
                 {
                     if (configuration.DiagnosticMessagesOrDefault)
@@ -277,6 +282,8 @@ namespace Xunit.Runner.VisualStudio
                 }
                 else
                 {
+                    Trace.WriteLine("is XUnitTestAssembly");
+
                     var targetFramework = framework.TargetFramework;
                     if (targetFramework.StartsWith("MonoTouch", StringComparison.OrdinalIgnoreCase) ||
                         targetFramework.StartsWith("MonoAndroid", StringComparison.OrdinalIgnoreCase) ||
@@ -287,6 +294,8 @@ namespace Xunit.Runner.VisualStudio
                     }
                     else
                     {
+                        Trace.WriteLine("isn't strange framework");
+
                         var discoveryOptions = TestFrameworkOptions.ForDiscovery(configuration);
 
                         using (var visitor = visitorFactory(assemblyFileName, framework, discoveryOptions))

@@ -1,10 +1,12 @@
 #if NETFRAMEWORK
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Security;
 using System.Security.Permissions;
+using System.Web.Hosting;
 
 namespace Xunit
 {
@@ -38,20 +40,58 @@ namespace Xunit
 
         static AppDomain CreateAppDomain(string assemblyFilename, string configFilename, bool shadowCopy, string shadowCopyFolder)
         {
-            var setup = new AppDomainSetup();
-            setup.ApplicationBase = Path.GetDirectoryName(assemblyFilename);
-            setup.ApplicationName = Guid.NewGuid().ToString();
+            Trace.WriteLine(">>> STARTIN");
 
-            if (shadowCopy)
+            var baseDir = Path.GetDirectoryName(assemblyFilename);
+            Trace.WriteLine(">>> BaseDir=" + baseDir);
+
+            var host = (AppDomainShim.AppDomainShim)ApplicationHost.CreateApplicationHost(typeof(AppDomainShim.AppDomainShim), "/app", baseDir);
+            Trace.WriteLine(">>> HOSTED");
+
+            if (true)
             {
-                setup.ShadowCopyFiles = "true";
-                setup.ShadowCopyDirectories = setup.ApplicationBase;
-                setup.CachePath = shadowCopyFolder ?? Path.Combine(Path.GetTempPath(), setup.ApplicationName);
+                var dom = host.GetAppDomain();
+                return dom;
             }
+            else {
+                var setup = new AppDomainSetup();
+                setup.ApplicationBase = Path.GetDirectoryName(assemblyFilename);
+                setup.ApplicationName = Guid.NewGuid().ToString();
 
-            setup.ConfigurationFile = configFilename;
+                //setup.AppDomainInitializer = new AppDomainInitializer(InitAppDomain);
 
-            return AppDomain.CreateDomain(Path.GetFileNameWithoutExtension(assemblyFilename), System.AppDomain.CurrentDomain.Evidence, setup, new PermissionSet(PermissionState.Unrestricted));
+                //if (shadowCopy)
+                //{
+                //    setup.ShadowCopyFiles = "true";
+                //    setup.ShadowCopyDirectories = setup.ApplicationBase;
+                //    setup.CachePath = shadowCopyFolder ?? Path.Combine(Path.GetTempPath(), setup.ApplicationName);
+                //}
+
+                setup.ConfigurationFile = configFilename;
+
+                return AppDomain.CreateDomain("WIBBBLYWOO" /*jPath.GetFileNameWithoutExtension(assemblyFilename)*/, System.AppDomain.CurrentDomain.Evidence, setup); //, new PermissionSet(PermissionState.Unrestricted));
+            }
+        }
+
+        private static Assembly Dom_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            Trace.WriteLine($">>> RESOLVIN {args.Name}");
+            return Assembly.Load(args.Name);
+        }
+
+        public class AppDomainUnveiler : MarshalByRefObject
+        {
+            public AppDomain GetAppDomain()
+            {
+                Trace.WriteLine(">>> GETTING APPDOMAIN");
+                return AppDomain.CurrentDomain;
+            }
+        }
+
+        static void InitAppDomain(string[] args)
+        {
+            AppDomain.CurrentDomain.SetData(".appDomain", "*");
+            AppDomain.CurrentDomain.SetData(".appVPath", "/appbase");
         }
 
         public TObject CreateObjectFrom<TObject>(string assemblyLocation, string typeName, params object[] args)
